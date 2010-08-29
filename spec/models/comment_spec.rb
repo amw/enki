@@ -83,6 +83,22 @@ describe Comment do
     @comment.post_title.should == "hello"
   end
 
+  it "validates honeypot_email field" do
+    @comment.honeypot_email = 'spambot@spambot.com'
+    @comment.validate_honeypot.should == false
+    @comment.honeypot_email = ''
+    @comment.validate_honeypot.should_not == false
+  end
+
+  it "blanks all fields" do 
+    set_comment_attributes(@comment)
+    @comment.blank_all_fields
+
+    @comment.attributes.each do |attr|
+      attr[1].blank?.should == true
+    end
+  end
+
   # TODO: acts_as_defensio_comment tests
   # TODO: OpenID error model
 end

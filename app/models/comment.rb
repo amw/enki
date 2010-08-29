@@ -3,10 +3,12 @@ class Comment < ActiveRecord::Base
 
   attr_accessor         :openid_error
   attr_accessor         :openid_valid
+  attr_accessor         :honeypot_email
+  attr_accessor         :honeypot_logger_info
 
   belongs_to            :post
 
-  before_save           :apply_filter
+  before_save           :apply_filter, :validate_honeypot
   after_save            :denormalize
   after_destroy         :denormalize
 
@@ -18,8 +20,24 @@ class Comment < ActiveRecord::Base
     errors.add(:base, openid_error) unless openid_error.blank?
   end
 
+  # Validate hidden anti-spam email textfield.
+  def validate_honeypot
+    unless self.honeypot_email.blank?
+      blank_all_fields
+      logger.info "Spambot detected: #{self.honeypot_logger_info.inspect}"
+      return false
+    end
+  end
+
   def apply_filter
     self.body_html = Lesstile.format_as_xhtml(self.body, :code_formatter => Lesstile::CodeRayFormatter)
+  end
+
+  def blank_all_fields
+    attrs = {}
+    self.attribute_names.each {|attr| attrs[attr] = ""}
+    self.attributes = attrs
+    logger.debug(self.attributes)
   end
 
   def blank_openid_fields

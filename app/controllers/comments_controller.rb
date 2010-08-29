@@ -28,6 +28,8 @@ class CommentsController < ApplicationController
   def create
     @comment = Comment.new((session[:pending_comment] || params[:comment] || {}).reject {|key, value| !Comment.protected_attribute?(key) })
     @comment.post = @post
+    @comment.honeypot_email = params[:email]
+    get_honeypot_logger_info
 
     session[:pending_comment] = nil
 
@@ -59,6 +61,12 @@ class CommentsController < ApplicationController
   end
 
   protected
+
+  def get_honeypot_logger_info
+    unless @comment.honeypot_email.blank?
+      @comment.honeypot_logger_info = {:datetime => Time.now.strftime("%d/%m/%Y %I:%M%p"), :remote_ip => request.remote_ip, :author => @comment.author, :body => @comment.body}
+    end
+  end
 
   def find_post
     @post = Post.find_by_permalink(*[:year, :month, :day, :slug].collect {|x| params[x] })
