@@ -101,7 +101,7 @@ describe Admin::PostsController do
 
     it 'is unprocessable' do
       do_put
-      response.status.should == '422 Unprocessable Entity'
+      response.status.should == 422
     end
   end
 
@@ -163,7 +163,7 @@ describe Admin::PostsController do
 
     it("renders post as json") do
       do_delete
-      response.should have_text(/#{Regexp.escape(@post.to_json)}/)
+      response.should contain(/#{Regexp.escape(@post.to_json)}/)
     end
   end
 end
@@ -171,7 +171,6 @@ end
 describe Admin::PostsController, 'with an AJAX request to preview' do
   before(:each) do
     Post.should_receive(:build_for_preview).and_return(@post = mock_model(Post))
-    controller.should_receive(:render).with(:partial => 'posts/post.html.erb', :locals => {:post => @post})
     session[:logged_in] = true
     xhr :post, :preview, :post => {
       :title        => 'My Post',
