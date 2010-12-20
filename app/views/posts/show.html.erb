@@ -12,7 +12,7 @@
     <%= render :partial => 'comments/comment', :locals => {:comment => comment} %>
   </li>
   <% end -%>
-</ol>
+</ul>
 <div class="related">Looking for more? Head on over to the <%= link_to("archives", archives_path) %>.</div>
 <h2>Post a comment</h2>
   <% unless @comment.errors.empty? -%>
