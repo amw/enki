@@ -45,7 +45,7 @@ class Comment < ActiveRecord::Base
   end
 
   def requires_openid_authentication?
-    !!self.author.index(".")
+    !!self.author.try(:index, '.')
   end
 
   def trusted_user?
