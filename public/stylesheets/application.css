@@ -261,6 +261,11 @@ textarea
   height: 150px;
 }
 
+#new_comment input#email, #new_comment label#email_label
+{
+    display:none;
+}
+
 .alt, .container_alt
 {
   background-color: #fafafa;
