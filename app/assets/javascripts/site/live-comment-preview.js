@@ -14,11 +14,13 @@ $(function() { // onload
       url:  dest + '/new',
       timeout: 2000,
       dataType: 'text/html',
-      error: function() {
+      accept: 'text/html',
+      error: function(err) {
         if ($('#comment-preview').length == 0) {
           comment_form.after('<div id="comment-preview"></div>')
         }
         $('#comment-preview').text("Failed to submit");
+        console.log(err);
       },
       success: function(r) {
         if ($('#comment-preview').length == 0) {
