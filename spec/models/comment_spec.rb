@@ -18,7 +18,7 @@ describe Comment do
   before(:each) do
     @comment = Comment.new
   end
-
+  
   it "is invalid with no post" do
     set_comment_attributes(@comment, :post => nil)
     @comment.should_not be_valid
@@ -89,6 +89,22 @@ describe Comment do
     @comment.post = mock_model(Post)
     @comment.post.should_receive(:title).and_return("hello")
     @comment.post_title.should == "hello"
+  end
+
+  it "validates honeypot_email field" do
+    @comment.honeypot_email = 'spambot@spambot.com'
+    @comment.validate_honeypot.should == false
+    @comment.honeypot_email = ''
+    @comment.validate_honeypot.should_not == false
+  end
+
+  it "blanks all fields" do 
+    set_comment_attributes(@comment)
+    @comment.blank_all_fields
+
+    @comment.attributes.each do |attr|
+      attr[1].blank?.should == true
+    end
   end
 
   # TODO: acts_as_defensio_comment tests
