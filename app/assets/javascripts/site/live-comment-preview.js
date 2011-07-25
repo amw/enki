@@ -13,14 +13,12 @@ $(function() { // onload
       data: comment_form.serialize(),
       url:  dest + '/new',
       timeout: 2000,
-      dataType: 'text/html',
-      accept: 'text/html',
-      error: function(err) {
+      dataType: 'html',
+      error: function() {
         if ($('#comment-preview').length == 0) {
           comment_form.after('<div id="comment-preview"></div>')
         }
         $('#comment-preview').text("Failed to submit");
-        console.log(err);
       },
       success: function(r) {
         if ($('#comment-preview').length == 0) {
