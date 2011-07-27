@@ -2,7 +2,7 @@ class Comment < ActiveRecord::Base
   include Gravtastic
   gravtastic :author_email,
              :size => 40,
-             :default => Enki::Config.default[:url] + '/images/openid_icon.png'
+             :default => Enki::Config.default[:url] + '/assets/openid_icon.png'
 
   DEFAULT_LIMIT = 15
 
