@@ -13,5 +13,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require common
-//= require live-comment-preview
+//= require_tree ./site
 //= require_self
