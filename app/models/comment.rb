@@ -19,7 +19,7 @@ class Comment < ActiveRecord::Base
   
   after_create :send_notification
 
-  validates_presence_of :author, :body, :post
+  validates             :author, :body, :post, :presence => true
   validate :open_id_error_should_be_blank
 
   def open_id_error_should_be_blank
@@ -52,7 +52,9 @@ class Comment < ActiveRecord::Base
   end
 
   def requires_openid_authentication?
-    !!self.author.try(:index, '.')
+    return false unless author
+
+    !!(author =~ %r{^https?://} || author =~ /\w+\.\w+/)
   end
 
   def trusted_user?

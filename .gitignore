@@ -3,7 +3,6 @@ log
 tmp/**/*
 tmp
 config/database.yml
-db/schema.rb
 .bundle
 *.log
 .sass-cache/*

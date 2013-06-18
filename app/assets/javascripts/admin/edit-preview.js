@@ -15,6 +15,7 @@ $(document).ready(function() {
           type: 'POST',
           data: form.serialize().replace(/&*_method=\w+&*/, ''),
           url: dest,
+          dataType: 'html',
           error: function() {
             $('#preview .content').html('<p>Failed to generate preview. Toggle back to edit mode and check that all required fields are filled in and valid.</p>');
           },
@@ -30,7 +31,7 @@ $(document).ready(function() {
     }
 
     $(document).keyup(function(e) {
-      if (e.metaKey && (e.which == 69)) { // Works in recent Safari and FF, unsure about IE
+      if (e.ctrlKey && (e.which == 69)) { // Works in recent Safari and FF, unsure about IE
         toggle_preview();
         e.preventDefault();
       }
