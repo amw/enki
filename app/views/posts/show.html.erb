@@ -23,26 +23,25 @@
     </ul>
   </div>
 <% end -%>
-<%= form_for([@post, @comment], :url => post_comments_path(@post)) do |form| -%>
+<%= form_for [@post, @comment] do |form| -%>
   <div>
-    <p><%= form.text_field 'author' %><label for="comment_author"><small>Name or <a href="http://openidexplained.com/">OpenID</a> (required)</small></label></p>
-    <p><%= text_field_tag 'email' %><label for="email" id="email_label"><small>Email</small></label></p>
-    <p><%= form.text_area 'body' %><br><small>(<a href="http://lesstile.rubyforge.org">lesstile enabled</a> - surround code blocks with ---)</small></p>
-    <p><%= submit_tag "Add Comment" %></p>
-  </div>
-<% end -%>
-
-<div>
-  <%= form_for [@post, @comment] do |form| -%>
     <p>
-      <%= form.text_field 'author' %>
+      <%= form.text_field :author %>
       <%= form.label :author %>
-      <small>Name or <%= link_to 'OpenID', 'http://openidexplained.com/' %> (required)</small>
+      <small>
+        Name or <%= link_to "OpenID", "http://openidexplained.com/" %>
+        (required)
+      </small>
     </p>
+    <%= text_field_tag :email %>
+    <%= label_tag :email, "", id: "email_label" %>
     <p>
-      <%= form.text_area 'body' %><br/>
-      <small>(<%= link_to 'lesstile enabled', 'http://lesstile.rubyforge.org' %> - surround code blocks with ---)</small>
+      <%= form.text_area :body %><br>
+      <small>
+        (<%= link_to 'lesstile enabled', 'http://lesstile.rubyforge.org' %> -
+        surround code blocks with ---)
+      </small>
     </p>
     <p><%= form.submit 'Add Comment' %></p>
-  <% end -%>
-</div>
+  </div>
+<% end -%>
