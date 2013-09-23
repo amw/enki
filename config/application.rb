@@ -1,24 +1,8 @@
 require File.expand_path('../boot', __FILE__)
 
-# Pick the frameworks you want:
-require "active_record/railtie"
-require "action_controller/railtie"
-require "action_mailer/railtie"
-require "active_resource/railtie"
-require "sprockets/railtie"
-# require "rails/test_unit/railtie"
+require 'rails/all'
 
-# Bundler 1.0.10 incorrectly activates the new experimental Psych YAML parser
-# in 1.9.2, which breaks on RedCloth. This hack reverts it, but can be removed
-# once it is all sorted out. The const_defined check is required for 1.8.7 compat.
-YAML::ENGINE.yamler = "syck" if YAML.const_defined?("ENGINE")
-
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  #Bundler.require(*Rails.groups(:assets => %w(development test)))
-  # If you want your assets lazily compiled in production, use this line
-  Bundler.require(:default, :assets, Rails.env)
-end
+Bundler.require(:default, Rails.env)
 
 # This configures the base path of routes for the main application.
 # For example, set to '/blog' to run at http://example.com/blog
