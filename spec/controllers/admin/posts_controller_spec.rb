@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
+require File.dirname(__FILE__) + '/../../factories'
 
 describe Admin::PostsController do
   describe 'handling GET to index' do
@@ -105,10 +106,57 @@ describe Admin::PostsController do
     end
   end
 
+  describe 'handling PUT to update with expected whitelisted attributes present' do
+    before(:each) do
+      @post = FactoryGirl.create(:post)
+      Post.stub(:find).and_return(@post)
+    end
+
+    it 'allows whitelisted attributes as expected' do
+      session[:logged_in] = true
+      put :update, :id => 1, :post => {
+        'title'                => "My Updated Post",
+        'body'                 => "hello this is my updated post",
+        'tag_list'             => "red, green, blue, magenta",
+        'published_at_natural' => "1 hour from now",
+        'slug'                 => "my-manually-entered-updated-post-slug",
+        'minor_edit'           => "1"
+      }
+
+      assigns(:post).title.should == "My Updated Post"
+      assigns(:post).body.should == "hello this is my updated post"
+      assigns(:post).tag_list.should == ["red", "green", "blue", "magenta"]
+      assigns(:post).published_at_natural.should == "1 hour from now"
+      assigns(:post).slug.should == "my-manually-entered-updated-post-slug"
+      assigns(:post).minor_edit.should == "1"
+    end
+  end
+
   describe 'handling POST to create with valid attributes' do
     it 'creates a post' do
       session[:logged_in] = true
       lambda { post :create, :post => valid_post_attributes }.should change(Post, :count).by(1)
+    end
+  end
+
+  describe 'handling POST to create with expected whitelisted attributes present' do
+    it 'allows whitelisted attributes as expected' do
+      session[:logged_in] = true
+      put :create, :id => 1, :post => {
+        'title'                => "My Awesome New Post",
+        'body'                 => "hello this is my awesome new post",
+        'tag_list'             => "teal, azure, turquoise",
+        'published_at_natural' => "now",
+        'slug'                 => "my-manually-entered-slug",
+        'minor_edit'           => "0"
+      }
+
+      assigns(:post).title.should == "My Awesome New Post"
+      assigns(:post).body.should == "hello this is my awesome new post"
+      assigns(:post).tag_list.should == ["teal", "azure", "turquoise"]
+      assigns(:post).published_at_natural.should == "now"
+      assigns(:post).slug.should == "my-manually-entered-slug"
+      assigns(:post).minor_edit.should == "0"
     end
   end
 
@@ -170,17 +218,19 @@ end
 
 describe Admin::PostsController, 'with an AJAX request to preview' do
   before(:each) do
-    Post.should_receive(:build_for_preview).and_return(@post = mock_model(Post))
     session[:logged_in] = true
     xhr :post, :preview, :post => {
-      :title        => 'My Post',
-      :body         => 'body',
-      :tag_list     => 'ruby',
-      :published_at => 'now'
+      :title                => 'My Post',
+      :body                 => 'body',
+      :tag_list             => 'ruby',
+      :published_at_natural => 'now'
     }
   end
 
   it "assigns a new post for the view" do
-    assigns(:post).should == @post
+    assigns(:post).title.should == 'My Post'
+    assigns(:post).body.should == 'body'
+    assigns(:post).tag_list.should == ['ruby']
+    assigns(:post).published_at_natural.should == 'now'
   end
 end
