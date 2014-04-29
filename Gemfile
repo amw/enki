@@ -5,7 +5,7 @@ gem 'rails', '~> 4.0.0'
 gem 'sass-rails'
 
 platforms :ruby do
-  gem 'sqlite3'
+  gem 'mysql2'
 end
 
 platforms :jruby do
