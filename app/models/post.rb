@@ -44,38 +44,20 @@ class Post < ActiveRecord::Base
       post.generate_slug
       post.set_dates
       post.apply_filter
-      TagList.from(params[:tag_list]).each do |tag|
-        post.tags << Tag.new(:name => tag)
-      end
+      post.tag_list = params[:tag_list]
       post
     end
 
-    def find_recent(options = {})
-      tag = options.delete(:tag)
-      options = {
-        :order      => 'posts.published_at DESC',
-        :conditions => ['published_at < ?', Time.zone.now],
-        :limit      => DEFAULT_LIMIT
-      }.merge(options)
-      if tag
-        find_tagged_with(tag, options)
-      else
-        find(:all, options)
-      end
-    end
-
-    def find_by_permalink(year, month, day, slug, options = {})
-      begin
-        day = Time.parse([year, month, day].collect(&:to_i).join("-")).midnight
-        post = find_all_by_slug(slug, options).detect do |post|
-          [:year, :month, :day].all? {|time|
-            post.published_at.send(time) == day.send(time)
-          }
-        end
-      rescue ArgumentError # Invalid time
-        post = nil
-      end
-      post || raise(ActiveRecord::RecordNotFound)
+    def by_permalink year, month, day, slug
+      date = [year, month, day].map(&:to_i).join "-"
+      day_start = Time.zone.parse(date).midnight
+      day_end = day_start + 24.hours
+      self
+        .where(slug: slug)
+        .where("published_at BETWEEN ? AND ?", day_start, day_end)
+        .order(published_at: :desc)
+    rescue ArgumentError # Invalid time
+      raise ActiveRecord::RecordNotFound
     end
 
     def find_all_grouped_by_month
@@ -117,20 +99,11 @@ class Post < ActiveRecord::Base
   end
 
   def denormalize_comments_count!
-    Post.update_all(["approved_comments_count = ?", self.approved_comments.count], ["id = ?", self.id])
+    update approved_comments_count: approved_comments.count
   end
 
   def generate_slug
     self.slug = self.title.dup if self.slug.blank?
     self.slug.slugorize!
-  end
-
-  def tag_list=(value)
-    value = value.split(',') if value.is_a?(String)
-    value.map!{ |tag_name| Tag::filter_name(tag_name) }
-
-    # TODO: Contribute this back to acts_as_taggable_on_steroids plugin
-    value = value.join(", ") if value.respond_to?(:join)
-    super(value)
   end
 end

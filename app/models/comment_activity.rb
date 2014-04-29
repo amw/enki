@@ -6,11 +6,7 @@ class CommentActivity
   end
 
   def comments
-    @comments ||= post.approved_comments.find_recent(:limit => 5)
-  end
-
-  def most_recent_comment
-    comments.first
+    @comments ||= post.approved_comments.order(created_at: :desc).limit 5
   end
 
   def self.find_recent
@@ -20,7 +16,7 @@ class CommentActivity
       .order('max(comments.created_at) desc')
       .limit(5)
     .collect { |post| CommentActivity.new(post) }
-    .sort_by { |activity| activity.most_recent_comment.created_at }
+    .sort_by { |activity| activity.comments.first.created_at }
     .reverse
   end
 end

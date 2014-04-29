@@ -8,8 +8,12 @@ module NavigationHelper
 
   def category_links_for_navigation
     link = Struct.new(:name, :url)
-    @popular_tags ||= Tag.all.reject { |tag| tag.taggings.empty? }.sort_by { |tag| tag.taggings.size }.reverse
-    @popular_tags.collect { |tag| link.new(tag.name, posts_path(:tag => tag.name)) }
+    @popular_tags ||= Post.tag_counts
+      .sort_by(&:taggings_count)
+      .reverse
+      .map {|tag|
+        link.new tag.name, posts_path(:tag => tag.name)
+      }
   end
 
   def class_for_tab(tab_name, index)

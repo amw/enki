@@ -16,7 +16,7 @@ class Comment < ActiveRecord::Base
   before_save           :apply_filter, :validate_honeypot
   after_save            :denormalize
   after_destroy         :denormalize
-  
+
   after_create :send_notification
 
   validates             :author, :body, :post, :presence => true
@@ -86,9 +86,9 @@ class Comment < ActiveRecord::Base
   def post_title
     post.title
   end
-  
+
   def send_notification
-    CommentMailer.deliver_notification(self)
+    CommentMailer.notification(self).deliver
   end
 
   class << self
@@ -110,13 +110,6 @@ class Comment < ActiveRecord::Base
         comment.author     = "Your OpenID Name"
       end
       comment
-    end
-
-    def find_recent(options = {})
-      all({
-        :limit => DEFAULT_LIMIT,
-        :order => 'created_at DESC'
-      }.merge(options))
     end
   end
 end

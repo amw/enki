@@ -88,9 +88,9 @@ class CommentsController < ApplicationController
   end
 
   def find_post
-    @post = Post.find_by_permalink(*[:year, :month, :day, :slug].map {|x|
-      params[x]
-    })
+    @post = Post
+      .by_permalink(params[:year], params[:month], params[:day], params[:slug])
+      .first!
   end
 
   def verify_authenticity_token_unless_openid

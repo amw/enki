@@ -5,7 +5,6 @@ describe Admin::DashboardController do
     before(:each) do
       @posts    = [mock_model(Post), mock_model(Post)]
       @comment_activity = [double("comment-1"), double("comment-2")]
-      Post.stub(:find_recent).and_return(@posts)
       Stats.stub(:new).and_return(@stats = Struct.new(:post_count, :comment_count, :tag_count).new(3,2,1))
 
       CommentActivity.stub(:find_recent).and_return(@comment_activity)

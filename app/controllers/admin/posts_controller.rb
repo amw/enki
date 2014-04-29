@@ -4,10 +4,9 @@ class Admin::PostsController < Admin::BaseController
   def index
     respond_to do |format|
       format.html {
-        @posts = Post.paginate(
-          :order => "coalesce(published_at, updated_at) DESC",
-          :page  => params[:page]
-        )
+        @posts = Post
+          .order("coalesce(published_at, updated_at) DESC")
+          .page params[:page]
       }
     end
   end

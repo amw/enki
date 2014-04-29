@@ -24,8 +24,7 @@ describe "/admin/dashboard/show.html" do
         :slug              => 'a-post',
         :approved_comments => []
       ),
-      :comments            => [mock_model(Comment, :author => 'Don', :body_html => 'Hello')],
-      :most_recent_comment => mock_model(Comment, :created_at => Time.now, :author => 'Don')
+      :comments            => [mock_model(Comment, :author => 'Don', :body_html => 'Hello')]
     )]
     assign :stats, Struct.new(:post_count, :comment_count, :tag_count).new(3,2,1)
     render :template => '/admin/dashboard/show', :formats => [:html]

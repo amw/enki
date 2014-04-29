@@ -4,10 +4,9 @@ class Admin::PagesController < Admin::BaseController
   def index
     respond_to do |format|
       format.html {
-        @pages = Page.paginate(
-          :order => "created_at DESC",
-          :page  => params[:page]
-        )
+        @pages = Page
+          .order(created_at: :desc)
+          .page params[:page]
       }
     end
   end

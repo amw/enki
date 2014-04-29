@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.0.0'
+gem 'rails', '~> 4.1.0'
 
 gem 'sass-rails'
 
@@ -26,7 +26,7 @@ gem 'jquery-rails'
 # To use debugger
 # gem 'ruby-debug'
 
-# Bundle the extra gems:
+gem 'acts-as-taggable-on'
 gem 'RedCloth', '~> 4.2.9', :require => 'redcloth'
 gem 'ruby-openid', :require => 'openid'
 gem 'rack-openid', :require => 'rack/openid'
@@ -55,4 +55,5 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'spring'
 end
